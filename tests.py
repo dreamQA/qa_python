@@ -3,16 +3,46 @@ from main import BooksCollector
 
 
 class TestBooksCollector:
+    # Разделил тест с 2мя методами из test_add_new_book и создал метод test_add_new_book_genre
     # Тестирование добавления новой книги
-    @pytest.mark.parametrize("book_name, expected_genre", [
-        ("Book 1", ""),
-        ("Book 2", ""),
+    @pytest.mark.parametrize("book_name",[
+        "Book 1",
+        "Book 2",
     ])
-    def test_add_new_book(self,book_name, expected_genre):
+    def test_add_new_book(self,book_name):
         collector = BooksCollector()
         collector.add_new_book(book_name)
         assert book_name in collector.books_genre
+
+    @pytest.mark.parametrize("book_name,expected_genre", [
+        ("Book 1",""),
+        ("Book 2",""),
+    ])
+    # Тестирование добавления новой книги ожидаемого жанра(добавлен после замечания)
+    def test_add_new_book_genre(self, book_name, expected_genre):
+        collector = BooksCollector()
+        collector.add_new_book(book_name)
         assert collector.books_genre[book_name] == expected_genre
+
+        # Тестирование получения ожидаемого жанра книги (добавлен после замечания)
+    def test_get_book_genre(self):
+        collector = BooksCollector()
+        collector.add_new_book("Book 1")
+        collector.set_book_genre("Book 1", "Фантастика")
+        assert collector.get_book_genre("Book 1") == "Фантастика"
+
+        # Тестирование получения ожидаемого списка жанров книг (добавлен после замечания)
+    def test_get_books_genre(self):
+        collector = BooksCollector()
+        collector.add_new_book("Book 1")
+        collector.set_book_genre("Book 1", "Фантастика")
+        collector.add_new_book("Book 2")
+        collector.set_book_genre("Book 2", "Комедии")
+        expected_genres = {
+            "Book 1": "Фантастика",
+            "Book 2": "Комедии"
+        }
+        assert collector.get_books_genre() == expected_genres
 
         # Тестирование добавления книги с названием, превышающим 40 символов
     def test_add_new_book_exceeding_lenght(self):
